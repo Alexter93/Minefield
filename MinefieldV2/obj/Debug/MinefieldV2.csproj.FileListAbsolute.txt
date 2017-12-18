@@ -1,0 +1,13 @@
+C:\Users\alcar_000\AppData\Local\Temporary Projects\MinefieldV2\bin\Debug\MinefieldV2.exe.config
+C:\Users\alcar_000\Documents\Programming\C#\MinefieldV2\MinefieldV2\bin\Debug\MinefieldV2.exe.config
+C:\Users\alcar_000\Documents\Programming\C#\MinefieldV2\MinefieldV2\bin\Debug\MinefieldV2.exe
+C:\Users\alcar_000\Documents\Programming\C#\MinefieldV2\MinefieldV2\bin\Debug\MinefieldV2.pdb
+C:\Users\alcar_000\Documents\Programming\C#\MinefieldV2\MinefieldV2\obj\Debug\MinefieldV2.csprojResolveAssemblyReference.cache
+C:\Users\alcar_000\Documents\Programming\C#\MinefieldV2\MinefieldV2\obj\Debug\MinefieldV2.frmDifficulty.resources
+C:\Users\alcar_000\Documents\Programming\C#\MinefieldV2\MinefieldV2\obj\Debug\MinefieldV2.Properties.Resources.resources
+C:\Users\alcar_000\Documents\Programming\C#\MinefieldV2\MinefieldV2\obj\Debug\MinefieldV2.csproj.GenerateResource.Cache
+C:\Users\alcar_000\Documents\Programming\C#\MinefieldV2\MinefieldV2\obj\Debug\MinefieldV2.exe
+C:\Users\alcar_000\Documents\Programming\C#\MinefieldV2\MinefieldV2\obj\Debug\MinefieldV2.pdb
+C:\Users\alcar_000\Documents\Programming\C#\MinefieldV2\MinefieldV2\obj\Debug\MinefieldV2.frmBoard.resources
+C:\Users\alcar_000\Documents\Programming\C#\MinefieldV2\MinefieldV2\obj\Debug\MinefieldV2.frmHighScores.resources
+C:\Users\alcar_000\Documents\Programming\C#\MinefieldV2\MinefieldV2\obj\Debug\MinefieldV2.frmNameEntry.resources
