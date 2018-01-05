@@ -36,6 +36,7 @@
             this.lblNames = new System.Windows.Forms.Label();
             this.lblPlaces = new System.Windows.Forms.Label();
             this.btnEraseScores = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
             this.grpScores.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -113,7 +114,8 @@
             // 
             // btnEraseScores
             // 
-            this.btnEraseScores.Location = new System.Drawing.Point(76, 247);
+            this.btnEraseScores.Enabled = false;
+            this.btnEraseScores.Location = new System.Drawing.Point(12, 247);
             this.btnEraseScores.Name = "btnEraseScores";
             this.btnEraseScores.Size = new System.Drawing.Size(128, 23);
             this.btnEraseScores.TabIndex = 15;
@@ -121,11 +123,22 @@
             this.btnEraseScores.UseVisualStyleBackColor = true;
             this.btnEraseScores.Click += new System.EventHandler(this.btnEraseScores_Click);
             // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(142, 247);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(128, 23);
+            this.btnOK.TabIndex = 16;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            // 
             // frmHighScores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(282, 282);
+            this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnEraseScores);
             this.Controls.Add(this.grpScores);
             this.Controls.Add(this.btnMaster);
@@ -149,5 +162,6 @@
         private System.Windows.Forms.Label lblPlaces;
         private System.Windows.Forms.Label lblNames;
         private System.Windows.Forms.Button btnEraseScores;
+        private System.Windows.Forms.Button btnOK;
     }
 }

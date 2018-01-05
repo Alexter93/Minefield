@@ -171,12 +171,17 @@ namespace MinefieldV2
                 
                 // -=<High Score Stuff>=-   -=========================================================================================================================================
                 frmHighScores scoreScreen = new frmHighScores();
+                frmNameEntry nameBox;
                 if (scoreScreen.isQuickEnough(seconds))
                 {
                     MessageBox.Show("You made it to the top 10 quickest times", "Minefield", MessageBoxButtons.OK);
-                    scoreScreen.insertTime(seconds, "someone");
+                    //scoreScreen.insertTime(seconds, "someone");
+                    nameBox = new frmNameEntry(seconds);
+                    nameBox.ShowDialog();
+
                 }
-                scoreScreen.ShowDialog();
+                else
+                    scoreScreen.ShowDialog();
 
 
                 if (MessageBox.Show("Congradulations! You Won! \nPlay again?", "Minefield", MessageBoxButtons.YesNo) == DialogResult.Yes)

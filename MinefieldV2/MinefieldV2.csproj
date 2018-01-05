@@ -73,6 +73,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScoreEntry.cs" />
     <EmbeddedResource Include="frmDifficulty.resx">
       <DependentUpon>frmDifficulty.cs</DependentUpon>
     </EmbeddedResource>
