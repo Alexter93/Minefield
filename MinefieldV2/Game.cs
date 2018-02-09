@@ -34,7 +34,7 @@ namespace MinefieldV2
                     yWindowSize = 576;
                     xMines = 16;
                     yMines = 16;
-                    marked = 20;
+                    marked = 40;
                     break;
                 }
             case 3: // Master Game
@@ -44,7 +44,7 @@ namespace MinefieldV2
                     yWindowSize = 776;
                     xMines = 32;
                     yMines = 24;
-                    marked = 35;
+                    marked = 99;
                     break;
                 }
             default: // Normal (Default) Game

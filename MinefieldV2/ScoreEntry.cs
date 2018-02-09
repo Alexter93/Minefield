@@ -10,12 +10,20 @@ namespace MinefieldV2
     {
         private int time = 0;
         private string name = "";
+        private int difficulty = 0;
 
-        // constructor =============================================================
+        // constructors ===========================================================
         public ScoreEntry(int t, string n)
         {
             time = t;
             name = n;
+        }
+
+        public ScoreEntry(int t, string n, int d)
+        {
+            time = t;
+            name = n;
+            difficulty = d;
         }
 
         // getters ================================================================
@@ -25,6 +33,9 @@ namespace MinefieldV2
         public string getName()
         { return name; }
 
+        public int getDifficulty()
+        { return difficulty; }
+
         // setters ================================================================
         public void setTime(int t)
         { time = t; }
@@ -32,23 +43,26 @@ namespace MinefieldV2
         public void setName(string n)
         { name = n; }
 
+        public void setDifficulty(int d)
+        { time = d; }
+
         // overloading of relational operators ====================================
         public static bool operator < (ScoreEntry se1, ScoreEntry se2)
         {
-            if (se1.time == 0) // 0 > #, becase sorting
+            /*if (se1.time == 0) // 0 > #, becase sorting
                 return false;
             else if (se2.time == 0)
                 return true;
-            return se1.time < se2.time;
+            */return se1.time < se2.time;
         }
 
         public static bool operator > (ScoreEntry se1, ScoreEntry se2)
         {
-            if (se1.time == 0) // 0 > #, becase sorting
+            /*if (se1.time == 0) // 0 > #, becase sorting
                 return true;
             else if (se2.time == 0)
                 return false;
-            return se1.time > se2.time;
+            */return se1.time > se2.time;
         }
 
         public static bool operator <= (ScoreEntry se1, ScoreEntry se2)

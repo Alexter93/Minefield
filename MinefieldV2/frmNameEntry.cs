@@ -14,14 +14,17 @@ namespace MinefieldV2
     {
         string name = "Someone";
         int seconds = 0;
+        int difficulty = 0;
         frmHighScores scoreScreen;
 
         // Constructor ================================================================
-        public frmNameEntry(int s)
+
+        public frmNameEntry(int s, int d)
         {
             InitializeComponent();
             scoreScreen = new frmHighScores();
             seconds = s;
+            difficulty = d;
         }
 
         // Click OK ===================================================================
@@ -34,9 +37,9 @@ namespace MinefieldV2
             else
             {
                 name = txtName.Text;
-                scoreScreen.insertTime(seconds, name);
+                scoreScreen.insertTime(seconds, name, difficulty);
                 this.Hide();
-                scoreScreen.ShowDialog();
+                scoreScreen.ShowDialog(); // need to make the appropreate tab the current on on scoreScreen
             }
         }
     }

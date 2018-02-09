@@ -1,0 +1,9 @@
+29 cleared - 47 detected cleared - 29/47=.617
+20 cleared - 34 detected cleared - 20/34=.588
+15 cleared - 23 detected cleared - 15/23=.652
+6 cleared - 6 detected cleared - fine
+4 cleared - 4 detected cleared - fine
+
+Resolution:
+when checking the surrounding buttons, it was only skipping disabled buttons
+buttons that were already cleared, but had a number on them were still counted

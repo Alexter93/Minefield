@@ -13,18 +13,17 @@ namespace MinefieldV2
 {
     public partial class frmHighScores : Form
     {
-        int place = 0;
-        //string[] names = new string[10];
-        //int[] times = new int[10];
-        //ScoreEntry[] timesArray = new ScoreEntry[10];
-        List<ScoreEntry> timesList = new List<ScoreEntry>();
+        List<ScoreEntry> normTimesList = new List<ScoreEntry>();
+        List<ScoreEntry> skilTimesList = new List<ScoreEntry>();
+        List<ScoreEntry> mastTimesList = new List<ScoreEntry>();
 
         // constructor ================================================================
         public frmHighScores()
         {
+            int finDiff;
             int finTime;
             string finName;
-
+            
 
             InitializeComponent();
 
@@ -33,84 +32,155 @@ namespace MinefieldV2
 
             using (StreamReader dataReader = File.OpenText("times.txt"))
             {
-                while (!dataReader.EndOfStream && place < 10)
+                while (!dataReader.EndOfStream)
                 {
+                    finDiff = Int32.Parse(dataReader.ReadLine().ToString());
                     finName = dataReader.ReadLine().ToString();
                     finTime = Int32.Parse(dataReader.ReadLine().ToString());
-                    //timesArray[place] = new ScoreEntry(finTime, finName);
-                    timesList.Add(new ScoreEntry(finTime, finName));
-                    place++;
+                    switch (finDiff) // add the entries in the appropreate lists based on difficulty
+                    {
+                        case 2:
+                        {
+                            skilTimesList.Add(new ScoreEntry(finTime, finName, finDiff));
+                            break;
+                        }
+                        case 3:
+                        {
+                            mastTimesList.Add(new ScoreEntry(finTime, finName, finDiff));
+                            break;
+                        }
+                        default:
+                        {
+                            normTimesList.Add(new ScoreEntry(finTime, finName, finDiff));
+                            break;
+                        }
+                    }
                 }
             }
             showTimes();
-
-            if (timesList.Count > 0)
-                btnEraseScores.Enabled = true;
         }
         
         // checks to see if the time is quick enough ==================================
-        public bool isQuickEnough(int t)
+        public bool isQuickEnough(int t, int d)
         {
 
             int slowestValidTime = 0;
 
             // if there's a vacant spot, assign the new score to it
-            if (timesList.Count() >= 10)
+            switch (d) // add the entries in the appropreate lists based on difficulty
             {
-                for (int i = 0; i < timesList.Count(); i++)
+                case 2:
                 {
-                    if (timesList[i].getTime() > slowestValidTime)
+                    if (skilTimesList.Count() >= 10)
                     {
-                        slowestValidTime = timesList[i].getTime();
+                        for (int i = 0; i < skilTimesList.Count(); i++)
+                        {
+                            if (skilTimesList[i].getTime() > slowestValidTime)
+                            {
+                                slowestValidTime = skilTimesList[i].getTime();
+                            }
+                        }
+                        return t < slowestValidTime;
                     }
+                    else
+                        return true;
                 }
-                return t < slowestValidTime;
+                case 3:
+                {
+                    if (mastTimesList.Count() >= 10)
+                    {
+                        for (int i = 0; i < mastTimesList.Count(); i++)
+                        {
+                            if (mastTimesList[i].getTime() > slowestValidTime)
+                            {
+                                slowestValidTime = mastTimesList[i].getTime();
+                            }
+                        }
+                        return t < slowestValidTime;
+                    }
+                    else
+                        return true;
+                }
+                default:
+                {
+                    if (normTimesList.Count() >= 10)
+                    {
+                        for (int i = 0; i < normTimesList.Count(); i++)
+                        {
+                            if (normTimesList[i].getTime() > slowestValidTime)
+                            {
+                                slowestValidTime = normTimesList[i].getTime();
+                            }
+                        }
+                        return t < slowestValidTime;
+                    }
+                    else
+                        return true;
+                }
             }
-            else
-                return true;
         }
-
-        // inserts a new time into the board (insertion sort) =========================
-        public void insertTime(int t, string n)
+        
+        // inserts a new time into the board ==========================================
+        public void insertTime(int t, string n, int d)
         {
-            //int slowestTimeIndex = 0;
-            //int slowestValidTime = 0;
-
-            // if there's a vacant spot, assign the new score to it
-            if (timesList.Count < 10)
-                timesList.Add(new ScoreEntry(t, n));
-            /*for (int i = 0; i < 10; i++)
+            switch (d) // add the entries in the appropreate lists based on difficulty
             {
-                if (timesArray[i].getTime() == 0)
-                {
-                    timesArray[i] = new ScoreEntry(t, n);
-                    return;
-                }
-            }*/
+                case 2:
+                    {
+                        // if there's a vacant spot, assign the new score to it
+                        if (skilTimesList.Count < 10)
+                            skilTimesList.Add(new ScoreEntry(t, n, d));
 
-            // if not, assign it to the spot with the slowest time
-            // copy this for another funti
-            else
-            {
-                timesList.Remove(timesList[getSlowestTimeIndex()]); // for "timesList.Max()", System.ArgumentException - Additional information: At least one object must implement IComparable.
-                timesList.Add(new ScoreEntry(t, n));
+                        // if not, assign it to the spot with the slowest time
+                        else
+                        {
+                            skilTimesList.Remove(skilTimesList[getSlowestTimeIndex(d)]); // for "timesList.Max()", System.ArgumentException - Additional information: At least one object must implement IComparable.
+                            skilTimesList.Add(new ScoreEntry(t, n, d));
+                        }
+
+                        if (skilTimesList.Count() > 1)
+                            sortTimes();
+                        break;
+                    }
+                case 3:
+                    {
+                        // if there's a vacant spot, assign the new score to it
+                        if (mastTimesList.Count < 10)
+                            mastTimesList.Add(new ScoreEntry(t, n, d));
+
+                        // if not, assign it to the spot with the slowest time
+                        else
+                        {
+                            mastTimesList.Remove(mastTimesList[getSlowestTimeIndex(d)]); // for "timesList.Max()", System.ArgumentException - Additional information: At least one object must implement IComparable.
+                            mastTimesList.Add(new ScoreEntry(t, n, d));
+                        }
+
+                        if (mastTimesList.Count() > 1)
+                            sortTimes();
+                        break;
+                    }
+                default:
+                    {
+                        // if there's a vacant spot, assign the new score to it
+                        if (normTimesList.Count < 10)
+                            normTimesList.Add(new ScoreEntry(t, n, d));
+
+                        // if not, assign it to the spot with the slowest time
+                        else
+                        {
+                            normTimesList.Remove(normTimesList[getSlowestTimeIndex(d)]); // for "timesList.Max()", System.ArgumentException - Additional information: At least one object must implement IComparable.
+                            normTimesList.Add(new ScoreEntry(t, n, d));
+                        }
+
+                        if (normTimesList.Count() > 1)
+                            sortTimes();
+                        break;
+                    }
             }
-            
-
-            /*for (int i=0; i < 10; i++)
-            {
-                if (slowestValidTime < timesArray[i].getTime())
-                {
-                    slowestValidTime = timesArray[i].getTime();
-                    slowestTimeIndex = i;
-                }
-            }
-            timesArray[slowestTimeIndex] = new ScoreEntry(t, n);*/
-            
-            if (timesList.Count() > 1)
-                sortTimes();
             saveTimes();
             showTimes();
+
+            tabControl1.SelectTab(d-1);
         }
 
         // sorts the elements in the arrays ===========================================
@@ -118,23 +188,61 @@ namespace MinefieldV2
         {
             ScoreEntry tempEntry = new ScoreEntry(0, "");
 
-            // insertion sort (least to greatest)
-            for (int i = 1; i < timesList.Count; i++)
+            // sort least to greatest - normTimesList
+            for (int i = 1; i < normTimesList.Count; i++)
             {
-                if (timesList[i - 1] > timesList[i]) // if greatest to least pattern is detected, not counting 0s...
+                if (normTimesList[i - 1] > normTimesList[i]) // if greatest to least pattern is detected, not counting 0s...
                 {
-                    tempEntry = timesList[i - 1];
-                    timesList[i - 1] = timesList[i];
-                    timesList[i] = tempEntry;
+                    tempEntry = normTimesList[i - 1];
+                    normTimesList[i - 1] = normTimesList[i];
+                    normTimesList[i] = tempEntry;
 
                     i = 0; // resets for another round of sorting the array
                 }
             }
-            if (timesList.Count > 10)
+            if (normTimesList.Count > 10)
             {
-                for (int i = 1; i < timesList.Count - 10; i++)
+                for (int i = 1; i < normTimesList.Count - 10; i++)
                 {
-                    timesList.RemoveAt(i);
+                    normTimesList.RemoveAt(i);
+                }
+            }
+            // skilTimesList
+            for (int i = 1; i < skilTimesList.Count; i++)
+            {
+                if (skilTimesList[i - 1] > skilTimesList[i]) // if greatest to least pattern is detected, not counting 0s...
+                {
+                    tempEntry = skilTimesList[i - 1];
+                    skilTimesList[i - 1] = skilTimesList[i];
+                    skilTimesList[i] = tempEntry;
+
+                    i = 0; // resets for another round of sorting the array
+                }
+            }
+            if (skilTimesList.Count > 10)
+            {
+                for (int i = 1; i < skilTimesList.Count - 10; i++)
+                {
+                    skilTimesList.RemoveAt(i);
+                }
+            }
+            // mastTimesList
+            for (int i = 1; i < mastTimesList.Count; i++)
+            {
+                if (mastTimesList[i - 1] > mastTimesList[i]) // if greatest to least pattern is detected, not counting 0s...
+                {
+                    tempEntry = mastTimesList[i - 1];
+                    mastTimesList[i - 1] = mastTimesList[i];
+                    mastTimesList[i] = tempEntry;
+
+                    i = 0; // resets for another round of sorting the array
+                }
+            }
+            if (mastTimesList.Count > 10)
+            {
+                for (int i = 1; i < mastTimesList.Count - 10; i++)
+                {
+                    mastTimesList.RemoveAt(i);
                 }
             }
         }
@@ -142,26 +250,56 @@ namespace MinefieldV2
         // shows/updates what is shown as the 10 best times ======================================
         private void showTimes()
         {
-            if (timesList.Count > 0)
-                btnEraseScores.Enabled = true;
+            sortTimes(); // prety important
 
             //sortTimes();
-            if (timesList.Count() > 1)
-                timesList.OrderBy(ScoreEntry => ScoreEntry.getTime()); // this does not seem to work
+            /*if (timesList.Count() > 1)
+                timesList.OrderBy(ScoreEntry => ScoreEntry.getTime());*/ // this does not seem to work
 
-            lblTimes.Text = String.Empty;
-            lblNames.Text = String.Empty;
+            lblNormTimes.Text = String.Empty;
+            lblNormNames.Text = String.Empty;
+            lblSkilTimes.Text = String.Empty;
+            lblSkilNames.Text = String.Empty;
+            lblMastTimes.Text = String.Empty;
+            lblMastNames.Text = String.Empty;
 
-            if (timesList.Count() > 0)
+            // lblNormTimes
+            if (normTimesList.Count() > 0)
             {
-                for (int i = 0; i < timesList.Count(); i++)
+                for (int i = 0; i < normTimesList.Count(); i++)
                 {
-                    lblTimes.Text += timesList[i].getTime() / 60 + ":";
-                    if (timesList[i].getTime() % 60 < 10)
-                        lblTimes.Text += "0";
-                    lblTimes.Text += timesList[i].getTime() % 60 + "\n";
+                    lblNormTimes.Text += normTimesList[i].getTime() / 60 + ":";
+                    if (normTimesList[i].getTime() % 60 < 10)
+                        lblNormTimes.Text += "0";
+                    lblNormTimes.Text += normTimesList[i].getTime() % 60 + "\n";
 
-                    lblNames.Text += timesList[i].getName() + "\n";
+                    lblNormNames.Text += normTimesList[i].getName() + "\n";
+                }
+            }
+            // lblSkilTimes
+            if (skilTimesList.Count() > 0)
+            {
+                for (int i = 0; i < skilTimesList.Count(); i++)
+                {
+                    lblSkilTimes.Text += skilTimesList[i].getTime() / 60 + ":";
+                    if (skilTimesList[i].getTime() % 60 < 10)
+                        lblSkilTimes.Text += "0";
+                    lblSkilTimes.Text += skilTimesList[i].getTime() % 60 + "\n";
+
+                    lblSkilNames.Text += skilTimesList[i].getName() + "\n";
+                }
+            }
+            // lblMastTimes
+            if (mastTimesList.Count() > 0)
+            {
+                for (int i = 0; i < mastTimesList.Count(); i++)
+                {
+                    lblMastTimes.Text += mastTimesList[i].getTime() / 60 + ":";
+                    if (mastTimesList[i].getTime() % 60 < 10)
+                        lblMastTimes.Text += "0";
+                    lblMastTimes.Text += mastTimesList[i].getTime() % 60 + "\n";
+
+                    lblMastNames.Text += mastTimesList[i].getName() + "\n";
                 }
             }
         }
@@ -174,26 +312,68 @@ namespace MinefieldV2
 
             using (StreamWriter dataWriter = File.CreateText("times.txt"))
             {
-                for (int i = 0; i < timesList.Count(); i++)
+                // lblNormTimes
+                for (int i = 0; i < normTimesList.Count(); i++)
                 {
-                    dataWriter.WriteLine(timesList[i].getName());
-                    dataWriter.WriteLine(timesList[i].getTime().ToString());
+                    dataWriter.WriteLine(normTimesList[i].getDifficulty().ToString());
+                    dataWriter.WriteLine(normTimesList[i].getName());
+                    dataWriter.WriteLine(normTimesList[i].getTime().ToString());
+                }
+                // lblSkilTimes
+                for (int i = 0; i < skilTimesList.Count(); i++)
+                {
+                    dataWriter.WriteLine(skilTimesList[i].getDifficulty().ToString());
+                    dataWriter.WriteLine(skilTimesList[i].getName());
+                    dataWriter.WriteLine(skilTimesList[i].getTime().ToString());
+                }
+                // lblMastTimes
+                for (int i = 0; i < mastTimesList.Count(); i++)
+                {
+                    dataWriter.WriteLine(mastTimesList[i].getDifficulty().ToString());
+                    dataWriter.WriteLine(mastTimesList[i].getName());
+                    dataWriter.WriteLine(mastTimesList[i].getTime().ToString());
                 }
             }
         }
 
         // finds the returns the index with the slowest time =========================
-        private int getSlowestTimeIndex()
+        private int getSlowestTimeIndex(int d)
         {
             int highestIndex = 0;
 
-            if (timesList.Count() > 1)
-                for (int i = 0; i < timesList.Count(); i++)
+            switch (d) // add the entries in the appropreate lists based on difficulty
+            {
+                case 2:
                 {
-                    if (highestIndex < timesList[i].getTime())
-                        highestIndex =i;
+                    if (skilTimesList.Count() > 1)
+                        for (int i = 0; i < skilTimesList.Count(); i++)
+                        {
+                            if (highestIndex < skilTimesList[i].getTime())
+                                highestIndex = i;
+                        }
+                    return highestIndex;
                 }
-            return highestIndex;
+                case 3:
+                {
+                    if (mastTimesList.Count() > 1)
+                        for (int i = 0; i < mastTimesList.Count(); i++)
+                        {
+                            if (highestIndex < mastTimesList[i].getTime())
+                                highestIndex = i;
+                        }
+                    return highestIndex;
+                }
+                default:
+                {
+                    if (normTimesList.Count() > 1)
+                        for (int i = 0; i < normTimesList.Count(); i++)
+                        {
+                            if (highestIndex < normTimesList[i].getTime())
+                                highestIndex = i;
+                        }
+                    return highestIndex;
+                }
+            }
         }
 
         // clears the score data ======================================================
@@ -206,12 +386,13 @@ namespace MinefieldV2
             }
             else
             {
-                //File.Delete("times.txt");
-                //File.Create("times.txt");
                 File.WriteAllText("times.txt", String.Empty);
-                lblTimes.Text = String.Empty;
-                lblNames.Text = String.Empty;
-                btnEraseScores.Enabled = false;
+                lblNormTimes.Text = String.Empty;
+                lblNormNames.Text = String.Empty;
+                lblSkilTimes.Text = String.Empty;
+                lblSkilNames.Text = String.Empty;
+                lblMastTimes.Text = String.Empty;
+                lblMastNames.Text = String.Empty;
             }
         }
         

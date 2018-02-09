@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace MinefieldV2
             currentGame = importedGame;
             createTiles();
             currentGame.setMineLocations();
+            //revealMines(); // for debugging purposes--
         }
 
 
@@ -46,6 +48,8 @@ namespace MinefieldV2
                         Height = 25,
                         Width = 25,
                         Location = currentPoint,
+                        Font = new Font("Microsoft Sans Serif", 7.8F, FontStyle.Bold)
+                        //Font = new Font(this.Font.Name ,FontStyle.Bold),
                         
                     };
                     currentPoint.Y += 25;
@@ -127,18 +131,6 @@ namespace MinefieldV2
                             else // clicked on a safe tile
                             {
                                 updateSafeTile(x, y);
-
-                                // this should be it's own funtion, updateSafeTile
-                                /*surroundingMines = currentGame.checkSuroundingTiles(x, y);
-                                if (surroundingMines > 0)
-                                {
-                                    tileGrid[x, y].Text = surroundingMines.ToString();
-                                }
-                                else
-                                {
-                                    clickSurroundingButtons(x,y);
-                                }
-                                tileGrid[x, y].Enabled = false;*/
                             }
                         }
                     }
@@ -150,20 +142,78 @@ namespace MinefieldV2
         private void updateSafeTile(int x, int y)
         {
             int surroundingMines;
+            string path = @"..\..\pics\";
+
+            //tileGrid[x, y].Enabled = false; // key to colored text
 
             surroundingMines = currentGame.checkSuroundingTiles(x, y);
             if (surroundingMines > 0) // a mine is nearby
             {
-                tileGrid[x, y].Text = surroundingMines.ToString();
+                // add color to the text
+                switch (surroundingMines) // may wanna use images..................................
+                {
+                    case 8:
+                    {
+                        //tileGrid[x,y].ForeColor = Color.Gray;
+                        tileGrid[x, y].Image = Image.FromFile(Path.Combine(Environment.CurrentDirectory, path, "eight.gif"));
+                        break;
+                    }
+                    // 7 is black, therefore nothing needs to be changed from the defaultcase 6:
+                    case 7:
+                    {
+                        //tileGrid[x,y].ForeColor = Color.DarkCyan;
+                        tileGrid[x, y].Image = Image.FromFile(Path.Combine(Environment.CurrentDirectory, path, "seven.gif"));
+                        break;
+                    }
+                    case 6:
+                    {
+                        //tileGrid[x,y].ForeColor = Color.DarkCyan;
+                        tileGrid[x, y].Image = Image.FromFile(Path.Combine(Environment.CurrentDirectory, path, "six.gif"));
+                        break;
+                    }
+                    case 5:
+                    {
+                        //tileGrid[x, y].ForeColor = Color.DarkRed;
+                        tileGrid[x, y].Image = Image.FromFile(Path.Combine(Environment.CurrentDirectory, path, "five.gif"));
+                        break;
+                    }
+                    case 4:
+                    {
+                        //tileGrid[x, y].ForeColor = Color.DarkBlue;
+                        tileGrid[x, y].Image = Image.FromFile(Path.Combine(Environment.CurrentDirectory, path, "four.gif"));
+                        break;
+                    }
+                    case 3:
+                    {
+                        //tileGrid[x, y].ForeColor = Color.Red;
+                        tileGrid[x, y].Image = Image.FromFile(Path.Combine(Environment.CurrentDirectory, path, "three.gif"));
+                        break;
+                    }
+                    case 2:
+                    {
+                        //tileGrid[x, y].ForeColor = Color.DarkGreen;
+                        tileGrid[x, y].Image = Image.FromFile(Path.Combine(Environment.CurrentDirectory, path, "two.gif"));
+                        break;
+                    }
+                    case 1:
+                    {
+                        //tileGrid[x, y].ForeColor = Color.Blue;
+                        tileGrid[x, y].Image = Image.FromFile(Path.Combine(Environment.CurrentDirectory, path, "one.gif"));
+                        break;
+                    }
+                }
+                //tileGrid[x, y].Text = surroundingMines.ToString();
             }
             else // no mines are nearby
             {
                 tileGrid[x, y].Enabled = false;
                 clickSurroundingButtons(x, y);
             }
-            tileGrid[x, y].Enabled = false;
+
+            // the placement here might have proplems
             currentGame.incCleared();
             lblCleared.Text = currentGame.getCleared().ToString();
+
             if (currentGame.gameWin()) // you win
             {
                 timer1.Stop();
@@ -172,11 +222,11 @@ namespace MinefieldV2
                 // -=<High Score Stuff>=-   -=========================================================================================================================================
                 frmHighScores scoreScreen = new frmHighScores();
                 frmNameEntry nameBox;
-                if (scoreScreen.isQuickEnough(seconds))
+                if (scoreScreen.isQuickEnough(seconds, currentGame.getDiff()))
                 {
                     MessageBox.Show("You made it to the top 10 quickest times", "Minefield", MessageBoxButtons.OK);
                     //scoreScreen.insertTime(seconds, "someone");
-                    nameBox = new frmNameEntry(seconds);
+                    nameBox = new frmNameEntry(seconds, currentGame.getDiff());
                     nameBox.ShowDialog();
 
                 }
@@ -202,42 +252,42 @@ namespace MinefieldV2
         {
             if (y > 0) // button above
             {
-                if (tileGrid[x, y - 1].Enabled == true) // makes sure it wasn't already checked, to prevent infinate loops
+                if (tileGrid[x, y - 1].Enabled == true && tileGrid[x, y - 1].Text == string.Empty) // makes sure it wasn't already checked, to prevent infinate loops
                     updateSafeTile(x, y - 1);
             }
             if (x > 0) // button to the left
             {
-                if (tileGrid[x - 1, y].Enabled == true)
+                if (tileGrid[x - 1, y].Enabled == true && tileGrid[x - 1, y].Text == string.Empty)
                     updateSafeTile(x - 1, y);
             }
             if (x < (currentGame.getXMines() - 1))  // button to the right
             {
-                if (tileGrid[x + 1, y].Enabled == true)
+                if (tileGrid[x + 1, y].Enabled == true && tileGrid[x + 1, y].Text == string.Empty)
                     updateSafeTile(x + 1, y);
             }
             if (y < (currentGame.getYMines() - 1)) // button below
             {
-                if (tileGrid[x, y + 1].Enabled == true)
+                if (tileGrid[x, y + 1].Enabled == true && tileGrid[x, y + 1].Text == string.Empty)
                     updateSafeTile(x, y + 1);
             }
             if (x > 0 && y > 0) // button above and to the left
             {
-                if (tileGrid[x - 1, y - 1].Enabled == true)
+                if (tileGrid[x - 1, y - 1].Enabled == true && tileGrid[x - 1, y - 1].Text == string.Empty)
                     updateSafeTile(x - 1, y - 1);
             }
             if (x < (currentGame.getXMines() - 1) && y > 0) // button above and to the right
             {
-                if (tileGrid[x + 1, y - 1].Enabled == true)
+                if (tileGrid[x + 1, y - 1].Enabled == true && tileGrid[x + 1, y - 1].Text == string.Empty)
                     updateSafeTile(x + 1, y - 1);
             }
             if (x > 0 && y < (currentGame.getYMines() - 1)) // button below and to the left
             {
-                if (tileGrid[x - 1, y + 1].Enabled == true)
+                if (tileGrid[x - 1, y + 1].Enabled == true && tileGrid[x - 1, y + 1].Text == string.Empty)
                     updateSafeTile(x - 1, y + 1);
             }
             if (x < (currentGame.getXMines() - 1) && y < (currentGame.getYMines() - 1)) // button below and to the right
             {
-                if (tileGrid[x + 1, y + 1].Enabled == true)
+                if (tileGrid[x + 1, y + 1].Enabled == true && tileGrid[x + 1, y + 1].Text == string.Empty)
                     updateSafeTile(x + 1, y + 1);
             }
         }
@@ -250,7 +300,10 @@ namespace MinefieldV2
                 for (int y = 0; y < currentGame.getYMines(); y++)
                 {
                     if (currentGame.checkTile(x, y))
-                        tileGrid[x, y].Text = "*";
+                    {
+                        //tileGrid[x, y].Text = "*";
+                        tileGrid[x, y].Image = Image.FromFile(Path.Combine(Environment.CurrentDirectory, @"..\..\pics\", "mine.gif"));
+                    }
                 }
             }
         }
